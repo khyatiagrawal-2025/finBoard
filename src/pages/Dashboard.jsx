@@ -17,7 +17,7 @@ import React from "react";
 import { parse, format } from "date-fns";
 
 export default function Dashboard() {
-  const { transactions } = React.useContext(DataContext);
+  const { transactions, currency } = React.useContext(DataContext);
 
   // ✅ Added loading + success state
   const [loading] = React.useState(false);
@@ -88,6 +88,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
+ issue-13-csv-feedback
 
       {/* ✅ Success Toast */}
       {successMessage && (
@@ -102,6 +103,20 @@ export default function Dashboard() {
       {loading && (
         <div className="flex justify-center items-center py-10">
           <span className="loading loading-spinner loading-lg text-primary"></span>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="retro-card p-6 flex flex-col justify-center">
+          <h2 className="text-gray-400 text-sm font-semibold tracking-widest uppercase mb-2">Income</h2>
+          <p className="text-[#00C49F] text-3xl font-black">{currency.symbol}{totalIncome.toLocaleString()}</p>
+        </div>
+        <div className="retro-card p-6 flex flex-col justify-center">
+          <h2 className="text-gray-400 text-sm font-semibold tracking-widest uppercase mb-2">Spent</h2>
+          <p className="text-[#FF6B6B] text-3xl font-black">{currency.symbol}{Math.abs(totalExpense).toLocaleString()}</p>
+        </div>
+        <div className="retro-card p-6 flex flex-col justify-center">
+          <h2 className="text-gray-400 text-sm font-semibold tracking-widest uppercase mb-2">Savings</h2>
+          <p className="text-[#0088FE] text-3xl font-black">{currency.symbol}{savings.toLocaleString()}</p>
+ main
         </div>
       )}
 

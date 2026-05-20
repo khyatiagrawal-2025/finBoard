@@ -11,7 +11,7 @@ export default function Budgets() {
   });
   const [showAlert, setShowAlert] = React.useState(false);
   const [exceededCategories, setExceededCategories] = React.useState([]);
-  const { transactions } = React.useContext(DataContext);
+  const { transactions, currency } = React.useContext(DataContext);
 
   // Save budgets to localStorage whenever they change
   React.useEffect(() => {
@@ -109,9 +109,9 @@ export default function Budgets() {
               <div key={item.category} className="flex items-center justify-between bg-[#111111] p-3 border border-[#1F1F1F]">
                 <span className="font-bold text-white uppercase tracking-wider">{item.category}</span>
                 <span className="text-[#FF6B6B] font-black">
-                  Over by ₹{item.over.toLocaleString()} 
+                  Over by {currency.symbol}{item.over.toLocaleString()} 
                   <span className="text-gray-500 text-sm ml-2">
-                    (₹{item.spent.toLocaleString()} / ₹{item.limit.toLocaleString()})
+                    ({currency.symbol}{item.spent.toLocaleString()} / {currency.symbol}{item.limit.toLocaleString()})
                   </span>
                 </span>
               </div>
@@ -170,7 +170,7 @@ export default function Budgets() {
               <div className="flex items-baseline gap-2 mb-6">
                 <span className="text-sm text-gray-500 uppercase tracking-wider">Spent</span>
                 <span className={`text-2xl font-black ${isOverBudget ? 'text-[#FF6B6B]' : 'text-white'}`}>
-                  ₹{spending[category].toLocaleString()}
+                  {currency.symbol}{spending[category].toLocaleString()}
                 </span>
               </div>
 
@@ -185,8 +185,8 @@ export default function Budgets() {
                 {budgets[category] && (
                   <div className="pt-2">
                     <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
-                      <span>₹{spending[category].toLocaleString()}</span>
-                      <span>Limit: ₹{budgets[category].toLocaleString()}</span>
+                      <span>{currency.symbol}{spending[category].toLocaleString()}</span>
+                      <span>Limit: {currency.symbol}{budgets[category].toLocaleString()}</span>
                     </div>
                     <progress
                       className={`progress w-full h-3 rounded-none [&::-webkit-progress-bar]:bg-[#1a1a1a]`}
@@ -199,7 +199,7 @@ export default function Budgets() {
                     <div className="mt-2 text-xs text-gray-400">
                       {percentage >= 100 ? (
                         <span className="text-[#FF6B6B] font-bold">
-                          {percentage.toFixed(0)}% - Over budget by ₹{(spending[category] - budgets[category]).toLocaleString()}
+                          {percentage.toFixed(0)}% - Over budget by {currency.symbol}{(spending[category] - budgets[category]).toLocaleString()}
                         </span>
                       ) : percentage >= 80 ? (
                         <span className="text-[#FFBB28] font-bold">
@@ -207,7 +207,7 @@ export default function Budgets() {
                         </span>
                       ) : (
                         <span className="text-[#00C49F]">
-                          {percentage.toFixed(0)}% - ₹{(budgets[category] - spending[category]).toLocaleString()} remaining
+                          {percentage.toFixed(0)}% - {currency.symbol}{(budgets[category] - spending[category]).toLocaleString()} remaining
                         </span>
                       )}
                     </div>

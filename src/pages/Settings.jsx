@@ -1,12 +1,16 @@
 import { useState, useContext } from "react";
 import Papa from "papaparse";
-import { DataContext } from "../context/AppContext";
+import { DataContext, CURRENCIES } from "../context/AppContext";
 import { demoData } from "../data/demoData";
 import { format } from "date-fns";
 
 export default function CSVParser() {
+ issue-13-csv-feedback
   const { transactions, setTransactions } = useContext(DataContext);
 
+
+  const { transactions, setTransactions, currency, updateCurrency } = useContext(DataContext);
+ main
   const [data, setData] = useState([]);
   const [showManualEntry, setShowManualEntry] = useState(false);
 
@@ -302,6 +306,66 @@ export default function CSVParser() {
           </form>
         )}
       </div>
+ issue-13-csv-feedback
+
+
+      {/* Currency Settings Section */}
+<div className="retro-card p-8">
+  <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest mb-6">Currency Settings</h2>
+  <div className="max-w-sm">
+    <label className="block text-xs text-gray-400 uppercase tracking-wider font-bold mb-2">
+      Select Currency
+    </label>
+    <select
+      value={currency.code}
+      onChange={(e) => {
+        const selected = CURRENCIES.find(c => c.code === e.target.value);
+        if (selected) updateCurrency(selected);
+      }}
+      className="retro-input p-3 w-full"
+    >
+      {CURRENCIES.map((c) => (
+        <option key={c.code} value={c.code}>
+          {c.symbol} — {c.name} ({c.code})
+        </option>
+      ))}
+    </select>
+    <p className="text-xs text-gray-400 mt-3">
+      Currently using: <span className="text-[#FF6B00] font-bold">{currency.symbol} {currency.name}</span>
+    </p>
+  </div>
+</div> 
+      {/* Data Management Section */}
+      {transactions && transactions.length > 0 && (
+        <div className="retro-card p-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest">Data Management</h2>
+              <p className="text-gray-400 text-sm mt-2">
+                Total Transactions: <span className="text-white font-bold">{transactions.length}</span>
+              </p>
+            </div>
+            <button
+              onClick={clearAllData}
+              className="px-4 py-2 bg-[#FF6B6B] text-white font-bold uppercase tracking-wider text-sm hover:bg-[#FF5252] transition-colors"
+            >
+              Clear All Data
+            </button>
+          </div>
+        </div>
+      )}
+
+      {data && data.length > 0 && (
+        <div className="retro-card p-8">
+          <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest mb-6">Raw Parsed Data</h2>
+          <div className="bg-[#0A0A0A] border border-[#1F1F1F] p-4 max-h-96 overflow-y-auto">
+            <pre className="text-xs text-gray-400 font-mono">
+              {JSON.stringify(data, null, 2)}
+            </pre>
+          </div>
+        </div>
+      )}
+ main
     </div>
   );
 }
