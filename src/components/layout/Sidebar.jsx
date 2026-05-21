@@ -5,10 +5,12 @@ export default function Sidebar() {
   const location = useLocation();
   const path = location.pathname;
 
+  // Added INSIGHTS navigating to /insights
   const links = [
     { name: "HOME", to: "/" },
     { name: "BUDGETS", to: "/budgets" },
     { name: "TRANSACTIONS", to: "/transaction" },
+    { name: "INSIGHTS", to: "/insights" }, 
     { name: "SETTINGS", to: "/settings" }
   ];
 
@@ -30,7 +32,9 @@ export default function Sidebar() {
 
       <nav className="flex flex-col flex-1 py-8 px-4 gap-2 overflow-y-auto">
         {links.map((link) => {
-          const isActive = path === link.to || (path === "/" && link.to === "/");
+          // Optimized active check logic to prevent cross-path highlights
+          const isActive = path === link.to;
+          
           return (
             <Link
               key={link.to}
