@@ -5,35 +5,74 @@ import { demoData } from "../data/demoData";
 import { format } from "date-fns";
 
 export default function CSVParser() {
-  const { transactions, setTransactions, currency, updateCurrency } = useContext(DataContext);
+  const {
+    transactions,
+    setTransactions,
+    currency,
+    updateCurrency,
+  } = useContext(DataContext);
+
   const [data, setData] = useState([]);
   const [showManualEntry, setShowManualEntry] = useState(false);
-  
+
+  // Loading + Success states
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
   // Manual entry form state
   const [manualTransaction, setManualTransaction] = useState({
     Date: format(new Date(), "dd/MM/yyyy"),
     Description: "",
-    Amount: ""
+    Amount: "",
   });
 
   const handleFile = (e) => {
     const file = e.target.files[0];
 
+    if (!file) return;
+
+    setLoading(true);
+    setSuccessMessage("");
+
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
+
       complete: (results) => {
-        setData(results.data);
-        localStorage.setItem("transactions", JSON.stringify(results.data));
-        setTransactions(results.data);
+        setTimeout(() => {
+          setData(results.data);
+
+          localStorage.setItem(
+            "transactions",
+            JSON.stringify(results.data)
+          );
+
+          setTransactions(results.data);
+
+          setLoading(false);
+
+          setSuccessMessage("Data loaded successfully!");
+
+          setTimeout(() => {
+            setSuccessMessage("");
+          }, 3000);
+        }, 1200);
+      },
+
+      error: () => {
+        setLoading(false);
+        alert("Failed to parse CSV file.");
       },
     });
   };
 
   const handleManualSubmit = (e) => {
     e.preventDefault();
-    
-    if (!manualTransaction.Description || !manualTransaction.Amount) {
+
+    if (
+      !manualTransaction.Description ||
+      !manualTransaction.Amount
+    ) {
       alert("Please fill in all fields");
       return;
     }
@@ -41,61 +80,113 @@ export default function CSVParser() {
     const newTransaction = {
       Date: manualTransaction.Date,
       Description: manualTransaction.Description,
-      Amount: manualTransaction.Amount
+      Amount: manualTransaction.Amount,
     };
 
-    const updatedTransactions = [...(transactions || []), newTransaction];
-    setTransactions(updatedTransactions);
-    localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+    const updatedTransactions = [
+      ...(transactions || []),
+      newTransaction,
+    ];
 
-    // Reset form
+    setTransactions(updatedTransactions);
+
+    localStorage.setItem(
+      "transactions",
+      JSON.stringify(updatedTransactions)
+    );
+
     setManualTransaction({
       Date: format(new Date(), "dd/MM/yyyy"),
       Description: "",
-      Amount: ""
+      Amount: "",
     });
 
-    alert("Transaction added successfully!");
+    setSuccessMessage("Transaction added successfully!");
+
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
   };
 
   const handleDateChange = (e) => {
-    // Convert from YYYY-MM-DD to DD/MM/YYYY
     const dateValue = e.target.value;
+
     if (dateValue) {
-      const [year, month, day] = dateValue.split('-');
+      const [year, month, day] = dateValue.split("-");
+
       setManualTransaction({
         ...manualTransaction,
-        Date: `${day}/${month}/${year}`
+        Date: `${day}/${month}/${year}`,
       });
     }
   };
 
   const getCurrentDateForInput = () => {
-    // Convert from DD/MM/YYYY to YYYY-MM-DD for input
-    const [day, month, year] = manualTransaction.Date.split('/');
+    const [day, month, year] =
+      manualTransaction.Date.split("/");
+
     return `${year}-${month}-${day}`;
   };
 
   const clearAllData = () => {
-    if (window.confirm("Are you sure you want to delete all transactions? This cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete all transactions? This cannot be undone."
+      )
+    ) {
       setTransactions([]);
       setData([]);
+
       localStorage.removeItem("transactions");
-      alert("All transactions deleted successfully!");
+
+      setSuccessMessage(
+        "All transactions deleted successfully!"
+      );
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
     }
   };
 
   return (
     <div className="max-w-4xl animate-in fade-in duration-500 space-y-6">
-      {/* Data Source Section */}
+
+      {/* SUCCESS MESSAGE */}
+      {successMessage && (
+        <div className="alert alert-success shadow-lg">
+          <span>{successMessage}</span>
+        </div>
+      )}
+
+      {/* LOADING SPINNER */}
+      {loading && (
+        <div className="flex justify-center">
+          <div className="flex items-center gap-3 bg-[#111111] border border-[#1F1F1F] px-6 py-4">
+            <span className="loading loading-spinner loading-md text-[#FF6B00]"></span>
+
+            <span className="text-gray-300 font-semibold uppercase tracking-wider text-sm">
+              Parsing CSV file...
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* DATA SOURCE */}
       <div className="retro-card p-8">
-        <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest mb-6">Data Source</h2>
-        
+        <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest mb-6">
+          Data Source
+        </h2>
+
         <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+
           <div className="form-control w-full max-w-xs">
             <label className="label">
-              <span className="label-text text-gray-400 font-bold uppercase tracking-wider text-xs">Upload CSV File</span>
+              <span className="label-text text-gray-400 font-bold uppercase tracking-wider text-xs">
+                Upload CSV File
+              </span>
             </label>
+
             <input
               type="file"
               accept=".csv"
@@ -103,44 +194,68 @@ export default function CSVParser() {
               onChange={handleFile}
             />
           </div>
-          
-          <div className="hidden md:flex items-center text-gray-600 font-black uppercase text-sm">Or</div>
-          
+
+          <div className="hidden md:flex items-center text-gray-600 font-black uppercase text-sm">
+            Or
+          </div>
+
           <div className="w-full md:w-auto md:mt-7">
             <button
               className="retro-btn w-full md:w-auto flex items-center justify-center gap-2"
               onClick={() => {
                 setTransactions(demoData);
-                localStorage.setItem("transactions", JSON.stringify(demoData));
+
+                localStorage.setItem(
+                  "transactions",
+                  JSON.stringify(demoData)
+                );
+
+                setSuccessMessage(
+                  "Demo data loaded successfully!"
+                );
+
+                setTimeout(() => {
+                  setSuccessMessage("");
+                }, 3000);
               }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
               Load Demo Data
             </button>
           </div>
         </div>
       </div>
 
-      {/* Manual Entry Section */}
+      {/* MANUAL ENTRY */}
       <div className="retro-card p-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest">Manual Entry</h2>
+          <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest">
+            Manual Entry
+          </h2>
+
           <button
-            onClick={() => setShowManualEntry(!showManualEntry)}
+            onClick={() =>
+              setShowManualEntry(!showManualEntry)
+            }
             className="text-sm text-gray-400 hover:text-[#FF6B00] uppercase tracking-wider font-bold transition-colors"
           >
-            {showManualEntry ? "Hide Form" : "Add Transaction"}
+            {showManualEntry
+              ? "Hide Form"
+              : "Add Transaction"}
           </button>
         </div>
 
         {showManualEntry && (
-          <form onSubmit={handleManualSubmit} className="space-y-4">
+          <form
+            onSubmit={handleManualSubmit}
+            className="space-y-4"
+          >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Date */}
+
               <div>
                 <label className="block text-xs text-gray-400 uppercase tracking-wider font-bold mb-2">
                   Date
                 </label>
+
                 <input
                   type="date"
                   value={getCurrentDateForInput()}
@@ -150,32 +265,42 @@ export default function CSVParser() {
                 />
               </div>
 
-              {/* Description */}
               <div>
                 <label className="block text-xs text-gray-400 uppercase tracking-wider font-bold mb-2">
                   Description
                 </label>
+
                 <input
                   type="text"
                   placeholder="e.g., Swiggy Food Order"
                   value={manualTransaction.Description}
-                  onChange={(e) => setManualTransaction({...manualTransaction, Description: e.target.value})}
+                  onChange={(e) =>
+                    setManualTransaction({
+                      ...manualTransaction,
+                      Description: e.target.value,
+                    })
+                  }
                   className="retro-input p-3 w-full"
                   required
                 />
               </div>
 
-              {/* Amount */}
               <div>
                 <label className="block text-xs text-gray-400 uppercase tracking-wider font-bold mb-2">
-                  Amount (use - for expenses)
+                  Amount
                 </label>
+
                 <input
                   type="number"
                   step="0.01"
                   placeholder="e.g., -450 or 5000"
                   value={manualTransaction.Amount}
-                  onChange={(e) => setManualTransaction({...manualTransaction, Amount: e.target.value})}
+                  onChange={(e) =>
+                    setManualTransaction({
+                      ...manualTransaction,
+                      Amount: e.target.value,
+                    })
+                  }
                   className="retro-input p-3 w-full"
                   required
                 />
@@ -183,74 +308,82 @@ export default function CSVParser() {
             </div>
 
             <div className="flex gap-4">
-              <button type="submit" className="retro-btn">
+              <button
+                type="submit"
+                className="retro-btn"
+              >
                 Add Transaction
               </button>
-              <button 
-                type="button" 
-                onClick={() => {
-                  setManualTransaction({
-                    Date: format(new Date(), "dd/MM/yyyy"),
-                    Description: "",
-                    Amount: ""
-                  });
-                }}
-                className="px-6 py-3 bg-[#1F1F1F] text-gray-300 font-bold uppercase tracking-wider hover:bg-[#2a2a2a] transition-colors"
-              >
-                Clear
-              </button>
-            </div>
 
-            <div className="mt-4 p-4 bg-[#0A0A0A] border border-[#1F1F1F]">
-              <p className="text-xs text-gray-400 mb-2">
-                <span className="text-[#FF6B00] font-bold">💡 Tips:</span>
-              </p>
-              <ul className="text-xs text-gray-400 space-y-1 list-disc list-inside">
-                <li>Use negative amounts for expenses (e.g., -450)</li>
-                <li>Use positive amounts for income (e.g., 5000)</li>
-                <li>Include keywords in description for auto-categorization (e.g., "Swiggy", "Uber", "Salary")</li>
-              </ul>
+              <button
+                type="button"
+                onClick={clearAllData}
+                className="px-6 py-3 bg-red-500 text-white font-bold uppercase tracking-wider hover:bg-red-600 transition-colors"
+              >
+                Clear All Data
+              </button>
             </div>
           </form>
         )}
       </div>
 
-      {/* Currency Settings Section */}
-<div className="retro-card p-8">
-  <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest mb-6">Currency Settings</h2>
-  <div className="max-w-sm">
-    <label className="block text-xs text-gray-400 uppercase tracking-wider font-bold mb-2">
-      Select Currency
-    </label>
-    <select
-      value={currency.code}
-      onChange={(e) => {
-        const selected = CURRENCIES.find(c => c.code === e.target.value);
-        if (selected) updateCurrency(selected);
-      }}
-      className="retro-input p-3 w-full"
-    >
-      {CURRENCIES.map((c) => (
-        <option key={c.code} value={c.code}>
-          {c.symbol} — {c.name} ({c.code})
-        </option>
-      ))}
-    </select>
-    <p className="text-xs text-gray-400 mt-3">
-      Currently using: <span className="text-[#FF6B00] font-bold">{currency.symbol} {currency.name}</span>
-    </p>
-  </div>
-</div> 
-      {/* Data Management Section */}
+      {/* CURRENCY SETTINGS */}
+      <div className="retro-card p-8">
+        <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest mb-6">
+          Currency Settings
+        </h2>
+
+        <div className="max-w-sm">
+          <label className="block text-xs text-gray-400 uppercase tracking-wider font-bold mb-2">
+            Select Currency
+          </label>
+
+          <select
+            value={currency.code}
+            onChange={(e) => {
+              const selected = CURRENCIES.find(
+                (c) => c.code === e.target.value
+              );
+
+              if (selected) {
+                updateCurrency(selected);
+              }
+            }}
+            className="retro-input p-3 w-full"
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.symbol} — {c.name} ({c.code})
+              </option>
+            ))}
+          </select>
+
+          <p className="text-xs text-gray-400 mt-3">
+            Currently using:
+            <span className="text-[#FF6B00] font-bold ml-1">
+              {currency.symbol} {currency.name}
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* DATA MANAGEMENT */}
       {transactions && transactions.length > 0 && (
         <div className="retro-card p-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest">Data Management</h2>
+              <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest">
+                Data Management
+              </h2>
+
               <p className="text-gray-400 text-sm mt-2">
-                Total Transactions: <span className="text-white font-bold">{transactions.length}</span>
+                Total Transactions:
+                <span className="text-white font-bold ml-1">
+                  {transactions.length}
+                </span>
               </p>
             </div>
+
             <button
               onClick={clearAllData}
               className="px-4 py-2 bg-[#FF6B6B] text-white font-bold uppercase tracking-wider text-sm hover:bg-[#FF5252] transition-colors"
@@ -261,9 +394,13 @@ export default function CSVParser() {
         </div>
       )}
 
+      {/* RAW DATA */}
       {data && data.length > 0 && (
         <div className="retro-card p-8">
-          <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest mb-6">Raw Parsed Data</h2>
+          <h2 className="text-[#FF6B00] text-lg font-black uppercase tracking-widest mb-6">
+            Raw Parsed Data
+          </h2>
+
           <div className="bg-[#0A0A0A] border border-[#1F1F1F] p-4 max-h-96 overflow-y-auto">
             <pre className="text-xs text-gray-400 font-mono">
               {JSON.stringify(data, null, 2)}
