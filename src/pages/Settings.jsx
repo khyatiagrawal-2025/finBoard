@@ -87,6 +87,8 @@ export default function CSVParser() {
         showModal({ type: 'alert', message: "Failed to parse CSV file." });
       },
     });
+
+    e.target.value = "";
   };
 
   const handleManualSubmit = (e) => {
