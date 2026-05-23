@@ -3,8 +3,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import categorize from "../components/utils/categorize";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
+import { useModal } from "../context/ModalContext";
 
 export default function Budgets() {
+  const { showModal } = useModal();
   const [budgets, setBudgets] = React.useState(() => {
     const saved = localStorage.getItem('budgets');
     return saved ? JSON.parse(saved) : {};
@@ -61,10 +63,14 @@ export default function Budgets() {
   };
 
   const resetBudgets = () => {
-    if (window.confirm('Are you sure you want to reset all budgets?')) {
-      setBudgets({});
-      localStorage.removeItem('budgets');
-    }
+    showModal({
+      type: 'confirm',
+      message: 'Are you sure you want to reset all budgets?',
+      onConfirm: () => {
+        setBudgets({});
+        localStorage.removeItem('budgets');
+      }
+    });
   };
 
   const getProgressColor = (spent, budget) => {

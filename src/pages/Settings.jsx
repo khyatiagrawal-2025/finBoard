@@ -3,6 +3,8 @@ import Papa from "papaparse";
 import { DataContext, CURRENCIES } from "../context/AppContext";
 import { demoData } from "../data/demoData";
 import { format } from "date-fns";
+import { useModal } from "../context/ModalContext";
+
 const categoryIcons = {
   Food: "🍔",
   Travel: "✈️",
@@ -19,6 +21,8 @@ export default function CSVParser() {
     currency,
     updateCurrency,
   } = useContext(DataContext);
+
+  const { showModal } = useModal();
 
   const [data, setData] = useState([]);
   const [showManualEntry, setShowManualEntry] = useState(false);
@@ -69,7 +73,7 @@ export default function CSVParser() {
 
       error: () => {
         setLoading(false);
-        alert("Failed to parse CSV file.");
+        showModal({ type: 'alert', message: "Failed to parse CSV file." });
       },
     });
   };
@@ -81,7 +85,7 @@ export default function CSVParser() {
       !manualTransaction.Description ||
       !manualTransaction.Amount
     ) {
-      alert("Please fill in all fields");
+      showModal({ type: 'alert', message: "Please fill in all fields" });
       return;
     }
 
@@ -137,24 +141,24 @@ export default function CSVParser() {
   };
 
   const clearAllData = () => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete all transactions? This cannot be undone."
-      )
-    ) {
-      setTransactions([]);
-      setData([]);
+    showModal({
+      type: 'confirm',
+      message: "Are you sure you want to delete all transactions? This cannot be undone.",
+      onConfirm: () => {
+        setTransactions([]);
+        setData([]);
 
-      localStorage.removeItem("transactions");
+        localStorage.removeItem("transactions");
 
-      setSuccessMessage(
-        "All transactions deleted successfully!"
-      );
+        setSuccessMessage(
+          "All transactions deleted successfully!"
+        );
 
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 3000);
-    }
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 3000);
+      }
+    });
   };
 
   return (
