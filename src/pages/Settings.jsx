@@ -58,6 +58,25 @@ export default function CSVParser() {
       skipEmptyLines: true,
 
       complete: (results) => {
+        if (!results.data || results.data.length === 0) {
+          setLoading(false);
+          showModal({ type: 'alert', message: "The uploaded CSV file is empty." });
+          return;
+        }
+
+        const requiredKeys = ["Date", "Description", "Amount", "Category"];
+        const firstRow = results.data[0];
+        const hasAllKeys = requiredKeys.every(key => key in firstRow);
+
+        if (!hasAllKeys) {
+          setLoading(false);
+          showModal({ 
+            type: 'alert', 
+            message: "Invalid CSV format. Required columns: Date, Description, Amount, Category." 
+          });
+          return;
+        }
+
         setTimeout(() => {
           const newData = importMode === "append" && transactions && transactions.length > 0 
             ? [...transactions, ...results.data]
