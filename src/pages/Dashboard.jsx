@@ -22,11 +22,18 @@ export default function Dashboard() {
 
   const [loading] = React.useState(false);
 
-  const [successMessage] = React.useState(
+  const [successMessage, setSuccessMessage] = React.useState(
     transactions && transactions.length > 0
       ? "Data loaded successfully!"
       : ""
   );
+
+  React.useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   const COLORS = [
     "#0088FE",
