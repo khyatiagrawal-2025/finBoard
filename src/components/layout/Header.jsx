@@ -48,11 +48,7 @@ export default function Header() {
       </div>
 
       <div className="ml-auto flex items-center gap-3">
-        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg"
-          style={{ background: "rgba(255,107,0,0.08)", border: "1px solid rgba(255,107,0,0.15)" }}>
-          <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B00] animate-pulse" />
-          <span className="text-xs font-semibold text-[#FF8C00]">Live</span>
-        </div>
+
       </div>
     </header>
   );
