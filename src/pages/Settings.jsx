@@ -14,10 +14,10 @@ const Section = ({
   children,
   right,
 }) => (
-  <div className="w-full rounded-[32px] border border-[#2B2B2B] bg-[#171717] p-6 md:p-8 transition-all duration-300 hover:border-[#FF6B00]/20 hover:shadow-[0_0_18px_rgba(255,107,0,0.03)]">
+  <div className="w-full rounded-[24px] border border-[#222] bg-[#0B0B0B] p-6 md:p-8 transition-all duration-300 hover:border-[#FF6B00]/30 hover:shadow-[0_0_20px_rgba(255,107,0,0.05)]">
 
     {/* HEADER */}
-    <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+    <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
 
       <div className="space-y-2">
         <h2 className="text-[28px] font-black uppercase tracking-[0.22em] text-[#FF6B00]">
@@ -198,7 +198,7 @@ export default function Settings() {
 
         {/* SUCCESS MESSAGE */}
         {successMessage && (
-          <div className="rounded-2xl border border-[#FF6B00]/25 bg-[#171717] px-5 py-4 text-sm font-bold uppercase tracking-wide text-[#FF6B00]">
+          <div className="rounded-2xl border border-[#FF6B00]/30 bg-[#111] px-5 py-4 text-sm font-bold uppercase tracking-wide text-[#FF6B00]">
             {successMessage}
           </div>
         )}
@@ -217,16 +217,16 @@ export default function Settings() {
           title="Data Source"
           subtitle="Upload CSV or load demo financial data"
           right={
-            <div className="flex overflow-hidden rounded-xl border border-[#2F2F2F]">
+            <div className="flex overflow-hidden rounded-xl border border-[#222]">
 
               {["replace", "append"].map((mode) => (
                 <button
                   key={mode}
                   onClick={() => setImportMode(mode)}
-                  className={`px-5 py-2 text-xs font-bold uppercase tracking-[0.12em] transition-all duration-200 ${
+                  className={`px-5 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-300 ${
                     importMode === mode
                       ? "bg-[#FF6B00] text-black"
-                      : "bg-[#1D1D1D] text-gray-400 hover:text-white"
+                      : "bg-[#111] text-gray-400 hover:text-white"
                   }`}
                 >
                   {mode}
@@ -235,7 +235,7 @@ export default function Settings() {
             </div>
           }
         >
-          <div className="grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 items-end">
+          <div className="grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-5 items-center">
 
             {/* FILE INPUT */}
             <div className="space-y-3">
@@ -248,7 +248,7 @@ export default function Settings() {
                 type="file"
                 accept=".csv"
                 onChange={handleFile}
-                className="file-input w-full rounded-xl border border-[#2F2F2F] bg-[#1D1D1D] text-white"
+                className="file-input w-full rounded-xl border border-[#222] bg-[#111] text-white"
               />
             </div>
 
@@ -278,7 +278,7 @@ export default function Settings() {
                   setSuccessMessage("");
                 }, 3000);
               }}
-              className="h-[44px] rounded-xl bg-[#FF6B00] px-6 text-xs font-bold uppercase tracking-[0.12em] text-black transition-all duration-200 hover:bg-[#ff7a1a]"
+              className="h-[52px] rounded-xl bg-[#FF6B00] px-8 text-sm font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] active:scale-95"
             >
               Load Demo Data
             </button>
@@ -298,7 +298,7 @@ export default function Settings() {
                   !showManualEntry
                 )
               }
-              className="rounded-xl border border-[#2F2F2F] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-gray-400 transition-all duration-200 hover:border-[#FF6B00]/30 hover:text-[#FF6B00]"
+              className="rounded-xl border border-[#222] px-5 py-2 text-sm font-semibold uppercase tracking-wide text-gray-400 transition-all duration-300 hover:border-[#FF6B00]/40 hover:text-[#FF6B00]"
             >
               {showManualEntry
                 ? "Hide Form"
@@ -313,7 +313,7 @@ export default function Settings() {
             >
 
               {/* INPUT GRID */}
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
 
                 {/* DATE */}
                 <div className="space-y-2">
@@ -331,7 +331,7 @@ export default function Settings() {
                         Date: e.target.value,
                       })
                     }
-                    className="w-full rounded-xl border border-[#2F2F2F] bg-[#1D1D1D] p-4 text-white outline-none transition-all duration-200 focus:border-[#FF6B00]/30"
+                    className="w-full rounded-xl border border-[#222] bg-[#111] p-4 text-white outline-none transition-all duration-300 focus:border-[#FF6B00]/40"
                   />
                 </div>
 
@@ -354,7 +354,7 @@ export default function Settings() {
                         Description: e.target.value,
                       })
                     }
-                    className="w-full rounded-xl border border-[#2F2F2F] bg-[#1D1D1D] p-4 text-white outline-none transition-all duration-200 focus:border-[#FF6B00]/30"
+                    className="w-full rounded-xl border border-[#222] bg-[#111] p-4 text-white outline-none transition-all duration-300 focus:border-[#FF6B00]/40"
                   />
                 </div>
 
@@ -375,22 +375,22 @@ export default function Settings() {
                         Amount: e.target.value,
                       })
                     }
-                    className="w-full rounded-xl border border-[#2F2F2F] bg-[#1D1D1D] p-4 text-white outline-none transition-all duration-200 focus:border-[#FF6B00]/30"
+                    className="w-full rounded-xl border border-[#222] bg-[#111] p-4 text-white outline-none transition-all duration-300 focus:border-[#FF6B00]/40"
                   />
                 </div>
               </div>
 
               {/* ACTION BUTTONS */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex flex-wrap items-center gap-3 pt-1">
 
-                <button className="rounded-xl bg-[#FF6B00] px-6 py-2.5 text-sm font-bold uppercase tracking-[0.12em] text-black transition-all duration-200 hover:bg-[#ff7a1a]">
+                <button className="rounded-xl bg-[#FF6B00] px-7 py-3 font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] active:scale-95">
                   Add Transaction
                 </button>
 
                 <button
                   type="button"
                   onClick={clearAllData}
-                  className="rounded-xl border border-red-500/30 px-6 py-2.5 text-sm font-bold uppercase tracking-[0.12em] text-red-400 transition-all duration-200 hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-300"
+                  className="rounded-xl border border-red-500/40 px-7 py-3 font-black uppercase tracking-wide text-red-400 transition-all duration-300 hover:bg-red-500 hover:text-white"
                 >
                   Clear Data
                 </button>
@@ -425,7 +425,7 @@ export default function Settings() {
                   updateCurrency(selected);
                 }
               }}
-              className="w-full rounded-xl border border-[#2F2F2F] bg-[#1D1D1D] p-4 text-white outline-none transition-all duration-200 focus:border-[#FF6B00]/30"
+              className="w-full rounded-xl border border-[#222] bg-[#111] p-4 text-white outline-none transition-all duration-300 focus:border-[#FF6B00]/40"
             >
               {CURRENCIES.map((c) => (
                 <option
@@ -462,7 +462,7 @@ export default function Settings() {
                 Total Transactions:
               </span>
 
-              <span className="rounded-xl border border-[#2F2F2F] bg-[#1D1D1D] px-4 py-2 font-bold text-white">
+              <span className="rounded-xl border border-[#222] bg-[#111] px-4 py-2 font-bold text-white">
                 {transactions.length}
               </span>
             </div>
