@@ -235,7 +235,7 @@ export default function Settings() {
             </div>
           }
         >
-          <div className="grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-5 items-center">
+          <div className="grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-5 xl:items-end">
 
             {/* FILE INPUT */}
             <div className="space-y-3">
@@ -278,7 +278,7 @@ export default function Settings() {
                   setSuccessMessage("");
                 }, 3000);
               }}
-              className="h-[52px] rounded-xl bg-[#FF6B00] px-8 text-sm font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] active:scale-95"
+              className="h-[48px] rounded-xl bg-[#FF6B00] px-8 text-sm font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_16px_rgba(255,107,0,0.08)] active:scale-95"
             >
               Load Demo Data
             </button>
