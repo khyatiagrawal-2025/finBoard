@@ -217,13 +217,12 @@ export default function Settings() {
           title="Data Source"
           subtitle="Upload CSV or load demo financial data"
           right={
-            <div className="flex overflow-hidden rounded-xl border border-[#222]">
-
+            <div className="flex overflow-hidden rounded-xl border border-[#222] self-start">
               {["replace", "append"].map((mode) => (
                 <button
                   key={mode}
                   onClick={() => setImportMode(mode)}
-                  className={`px-5 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-300 ${
+                  className={`h-[42px] px-5 text-xs font-bold uppercase tracking-wide transition-all duration-300 ${
                     importMode === mode
                       ? "bg-[#FF6B00] text-black"
                       : "bg-[#111] text-gray-400 hover:text-white"
@@ -235,10 +234,10 @@ export default function Settings() {
             </div>
           }
         >
-          <div className="grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-5 xl:items-end">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-end">
 
             {/* FILE INPUT */}
-            <div className="space-y-3">
+            <div className="flex-1 space-y-3">
 
               <label className="text-xs font-bold uppercase tracking-[0.18em] text-gray-500">
                 Upload CSV File
@@ -248,7 +247,7 @@ export default function Settings() {
                 type="file"
                 accept=".csv"
                 onChange={handleFile}
-                className="file-input w-full rounded-xl border border-[#222] bg-[#111] text-white"
+                className="file-input h-[48px] w-full rounded-xl border border-[#222] bg-[#111] text-white"
               />
             </div>
 
@@ -278,7 +277,7 @@ export default function Settings() {
                   setSuccessMessage("");
                 }, 3000);
               }}
-              className="h-[48px] rounded-xl bg-[#FF6B00] px-8 text-sm font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_16px_rgba(255,107,0,0.08)] active:scale-95"
+              className="h-[48px] min-w-[240px] rounded-xl bg-[#FF6B00] px-8 text-sm font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] hover:bg-[#ff7a1a] hover:shadow-[0_0_16px_rgba(255,107,0,0.18)] active:scale-[0.98]"
             >
               Load Demo Data
             </button>
@@ -383,7 +382,7 @@ export default function Settings() {
               {/* ACTION BUTTONS */}
               <div className="flex flex-wrap items-center gap-3 pt-1">
 
-                <button className="rounded-xl bg-[#FF6B00] px-7 py-3 font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] active:scale-95">
+                <button className="rounded-xl bg-[#FF6B00] px-7 py-3 font-black uppercase tracking-wide text-black transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_16px_rgba(255,107,0,0.18)] active:scale-95">
                   Add Transaction
                 </button>
 
